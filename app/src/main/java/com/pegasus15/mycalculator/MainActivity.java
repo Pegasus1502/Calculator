@@ -1,70 +1,82 @@
 package com.pegasus15.mycalculator;
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
-
+import java.util.Objects;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
 
     EditText workingsTV;
-    EditText resultsTV;
-
+    TextView resultsTV;
     String workings = "";
     String formula = "";
     String tempFormula = "";
 
+
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initTextViews();
-    }
 
-    @SuppressLint("WrongViewCast")
+
+        initTextViews();
+
+
+
+    }
     private void initTextViews()
     {
-        workingsTV =findViewById(R.id.workingsTextView);
-        resultsTV = findViewById(R.id.resultTextView);
-    }
+        workingsTV = (EditText)findViewById(R.id.workingsTextView);
+        resultsTV = (TextView)findViewById(R.id.resultTextView);
+        workingsTV.setShowSoftInputOnFocus(false);
 
+    }
     private void setWorkings(String givenValue)
     {
         workings = workings + givenValue;
         workingsTV.setText(workings);
     }
-
-
     public void equalsOnClick(View view)
     {
-        Double result = null;
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");
-        checkForPowerOf();
 
-        try {
-            result = (double)engine.eval(formula);
-        } catch (ScriptException e)
-        {
-            Toast.makeText(this, "Invalid Input", Toast.LENGTH_SHORT).show();
+
+        if (!Objects.equals(workings, "")){
+            Double result = null;
+            ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");
+            checkForPowerOf();
+
+            try {
+                result = (double)engine.eval(formula);
+            } catch (ScriptException e)
+            {
+                Toast.makeText(this, "Invalid Input", Toast.LENGTH_SHORT).show();
+            }
+
+            if(result != null)
+                resultsTV.setText(String.valueOf(result.doubleValue()));
+
+        }else {
+            setWorkings("");
+            Toast.makeText(this, "Enter any number...", Toast.LENGTH_SHORT).show();
         }
 
-        if(result != null)
-        {
-            resultsTV.setText(String.valueOf(result.doubleValue()));
-        }
+
+
+
+
+
 
     }
 
@@ -141,6 +153,8 @@ public class MainActivity extends AppCompatActivity
             leftBracket = true;
         }
     }
+
+
 
     public void powerOfOnClick(View view)
     {
@@ -222,8 +236,6 @@ public class MainActivity extends AppCompatActivity
         setWorkings("0");
     }
 
-    public void doublezeroOnClick(View view) {
 
-        setWorkings("00");
-    }
+
 }
